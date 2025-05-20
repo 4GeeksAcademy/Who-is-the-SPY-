@@ -25,12 +25,30 @@ const Login = () => {
       const idToken = await user.getIdToken();
       console.log("ID Token:", idToken); // Guardarlo en localStorage o sesión si lo necesitas
 
-      // Redirigir al home (sala de espera)
-      navigate("/waiting-room");
+      // Verificar si hay un link pendiente en localStorage
+      const pendingLink = localStorage.getItem("pendingInviteLink");
+
+      if (pendingLink) {
+        const roomId = extractRoomId(pendingLink);
+        localStorage.removeItem("pendingInviteLink");  // Elimina el link después de redirigir
+        navigate(`/join-room/${roomId}`);
+      } else {
+        // Si no hay link pendiente, redirige al home para crear una sala
+        navigate("/create");  // Aquí es donde redirige después de login
+      }
     } catch (err) {
       setError("Correo o contraseña incorrectos");
     } finally {
       setLoading(false);  // Termina el proceso de carga
+    }
+  };
+
+  const extractRoomId = (url) => {
+    try {
+      const parts = url.trim().split("/");
+      return parts[parts.length - 1]; // Última parte del link (roomId)
+    } catch {
+      return null;
     }
   };
 
