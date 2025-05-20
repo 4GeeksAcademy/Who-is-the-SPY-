@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { getDatabase, ref, set, push } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase';
+import './CreateRoom.css';
+
 
 const CreateRoom = () => {
   const [roomName, setRoomName] = useState('');
@@ -25,7 +27,7 @@ const CreateRoom = () => {
       settings: {
         mode: 'normal',  // Puedes establecer un modo predeterminado si es necesario
       },
-      inviteLink: `https://tuweb.com/invite/${newRoomId}`  // Enlace de invitación
+      inviteLink: `https://symmetrical-parakeet-v69vxrqrq96hw4x9-5173.app.github.dev/invite/${newRoomId}`  // Enlace de invitación
     };
 
     // Establecer la información de la sala en la base de datos

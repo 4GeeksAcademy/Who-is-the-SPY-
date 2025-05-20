@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getDatabase, ref, onValue, update } from 'firebase/database';
-import { auth } from '../../firebase';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ref, onValue, update } from 'firebase/database';
+import { auth, rtdb } from '../../firebase'; // ✅ Usamos la base de datos correcta
+import './RoomLobby.css';
 
 const RoomLobby = () => {
   const { roomId } = useParams();
+  const navigate = useNavigate();
   const [roomData, setRoomData] = useState(null);
   const [userStatus, setUserStatus] = useState('waiting');
   const [userId, setUserId] = useState('');
@@ -13,10 +15,10 @@ const RoomLobby = () => {
   const [missionPrepTime, setMissionPrepTime] = useState(20);
   const [allPlayersReady, setAllPlayersReady] = useState(false);
   const [inviteLink, setInviteLink] = useState('');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    const db = getDatabase();
-    const roomRef = ref(db, 'rooms/' + roomId);
+    const roomRef = ref(rtdb, 'rooms/' + roomId);
 
     onValue(roomRef, (snapshot) => {
       if (snapshot.exists()) {
@@ -24,8 +26,16 @@ const RoomLobby = () => {
         setRoomData(data);
         setInviteLink(data.inviteLink || `${window.location.origin}/room/${roomId}`);
 
-        const playersReady = Object.values(data.players || {}).every(player => player.status === 'ready');
+        const playersReady = Object.values(data.players || {}).every(
+          (player) => player.status === 'ready'
+        );
         setAllPlayersReady(playersReady);
+
+        if (data.gameStarted) {
+          navigate(`/game/${roomId}`, {
+            state: { settings: data.settings, players: data.players },
+          });
+        }
       } else {
         alert('Sala no encontrada.');
       }
@@ -35,29 +45,32 @@ const RoomLobby = () => {
     if (user) {
       setUserId(user.uid);
     }
-  }, [roomId]);
+  }, [roomId, navigate]);
 
   const handleReady = () => {
     if (!userId || !roomData) return;
-
-    const db = getDatabase();
-    const playerRef = ref(db, `rooms/${roomId}/players/${userId}`);
+    const playerRef = ref(rtdb, `rooms/${roomId}/players/${userId}`);
     update(playerRef, { status: 'ready' });
     setUserStatus('ready');
   };
 
   const handleStartGame = () => {
     if (userId !== roomData.host) return;
-
-    const db = getDatabase();
-    const roomRef = ref(db, `rooms/${roomId}`);
+    const roomRef = ref(rtdb, `rooms/${roomId}`);
     update(roomRef, {
       gameStarted: true,
       settings: {
         voteTime,
         spyCount,
-        missionPrepTime
-      }
+        missionPrepTime,
+      },
+    });
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(inviteLink).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     });
   };
 
@@ -68,55 +81,84 @@ const RoomLobby = () => {
       {roomData ? (
         <>
           <h2>Sala: {roomId}</h2>
-          <p><strong>Enlace de invitación:</strong></p>
-          <input type="text" readOnly value={inviteLink} onClick={(e) => e.target.select()} />
+          <div className="invite-link-group">
+            <input
+              type="text"
+              readOnly
+              value={inviteLink}
+              onClick={(e) => e.target.select()}
+            />
+            <button onClick={handleCopyLink}>
+              {copied ? '¡Copiado!' : 'Copiar enlace'}
+            </button>
+          </div>
 
-          <h3>Jugadores:</h3>
-          <ul>
-            {Object.entries(roomData.players).map(([key, player]) => (
-              <li key={key}>{player.name} - {player.status}</li>
-            ))}
-          </ul>
-
-          {!isHost && userStatus === 'waiting' && (
-            <button onClick={handleReady}>Estoy listo</button>
-          )}
-          {!isHost && userStatus === 'ready' && (
-            <p>Esperando a los demás...</p>
-          )}
+          <div className="player-row">
+            {Object.entries(roomData.players).map(([key, player]) => {
+              const avatarUrl =
+                player.avatar || `https://api.dicebear.com/7.x/thumbs/svg?seed=${player.name}`;
+              return (
+                <div
+                  key={key}
+                  className={`player-card ${player.status === 'ready' ? 'ready' : ''}`}
+                >
+                  <img className="avatar" src={avatarUrl} alt={`Avatar de ${player.name}`} />
+                  <div className="player-name">
+                    {player.name}
+                    {player.status === 'ready' && <span className="check"> ✅</span>}
+                  </div>
+                  {key === userId && player.status !== 'ready' && (
+                    <button onClick={handleReady}>Estoy listo</button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
 
           {isHost && (
-            <>
-              <div className="host-dashboard">
-                <h3>Configuración del juego</h3>
+            <div className="host-dashboard">
+              <h3>Configuración del juego</h3>
+              <p className="subtitle">Reclutando agentes</p>
 
-                <label>Tiempo de Votación (5-15s):</label>
-                <input
-                  type="number"
-                  value={voteTime}
-                  min="5"
-                  max="15"
-                  onChange={(e) => setVoteTime(Number(e.target.value))}
-                />
+              <label>Tiempo de Votación (5-15s):</label>
+              <div className="control-group">
+                <button onClick={() => setVoteTime(Math.max(5, voteTime - 1))}>−</button>
+                <span>{voteTime} s</span>
+                <button onClick={() => setVoteTime(Math.min(15, voteTime + 1))}>+</button>
+              </div>
 
-                <label>Número de Espías (1-5):</label>
-                <input
-                  type="number"
-                  value={spyCount}
-                  min="1"
-                  max="5"
-                  onChange={(e) => setSpyCount(Number(e.target.value))}
-                />
+              <label>Número de Espías (1-5):</label>
+              <div className="control-group">
+                <button onClick={() => setSpyCount(Math.max(1, spyCount - 1))}>−</button>
+                <span>{spyCount}</span>
+                <button onClick={() => setSpyCount(Math.min(5, spyCount + 1))}>+</button>
+              </div>
 
-                <label>Tiempo para Preparar Misión (20s, 40s, 60s):</label>
-                <select
-                  value={missionPrepTime}
-                  onChange={(e) => setMissionPrepTime(Number(e.target.value))}
+              <label>Tiempo para Preparar Misión:</label>
+              <div className="control-group">
+                <button
+                  onClick={() =>
+                    setMissionPrepTime((prev) => {
+                      const options = [20, 40, 60];
+                      const i = options.indexOf(prev);
+                      return options[(i + options.length - 1) % options.length];
+                    })
+                  }
                 >
-                  <option value={20}>20 segundos</option>
-                  <option value={40}>40 segundos</option>
-                  <option value={60}>60 segundos</option>
-                </select>
+                  ◀
+                </button>
+                <span>{missionPrepTime} s</span>
+                <button
+                  onClick={() =>
+                    setMissionPrepTime((prev) => {
+                      const options = [20, 40, 60];
+                      const i = options.indexOf(prev);
+                      return options[(i + 1) % options.length];
+                    })
+                  }
+                >
+                  ▶
+                </button>
               </div>
 
               {allPlayersReady ? (
@@ -124,7 +166,7 @@ const RoomLobby = () => {
               ) : (
                 <p>Esperando a que todos los jugadores estén listos...</p>
               )}
-            </>
+            </div>
           )}
         </>
       ) : (

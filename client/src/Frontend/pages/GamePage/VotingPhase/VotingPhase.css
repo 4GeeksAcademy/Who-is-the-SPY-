@@ -1,0 +1,23 @@
+.voting-phase {
+  color: white;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.team-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px auto;
+}
+
+.vote-buttons button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+.vote-status ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}

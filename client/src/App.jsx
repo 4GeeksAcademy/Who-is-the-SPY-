@@ -19,7 +19,7 @@ function App() {
         <Route path="/login" element={<Login/>} />
         <Route path="/loginpage" element={<LoginPage/>}/>
         <Route path="/waiting-room" element={<WaitingRoomPage />} />
-        <Route path="/game" element={<GamePage />} />
+        <Route path="/game/:roomId" element={<GamePage />} />
         <Route path="/join" element={<JoinRoom/>} />
         <Route path="/create" element={<CreateRoom/>} />
         <Route path="/room/:roomId" element={<RoomLobby />} />

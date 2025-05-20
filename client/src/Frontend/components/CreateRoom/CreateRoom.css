@@ -1,0 +1,53 @@
+.create-room {
+ background-color: rgba(0, 0, 0, 0.678); /* Fondo translúcido para el formulario */
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); /* Sombra roja misteriosa */
+  width: 350px;
+  text-align: center;
+  position: relative;
+}
+
+.create-room h2 {
+ color: #FF4040; /* Rojo conspirativo */
+  font-size: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 8px rgba(255, 0, 0, 0.7);
+}
+
+.create-room input {
+ackground-color: #222; /* Fondo oscuro para los campos */
+  color: #fff;
+  border: 2px solid #555;
+  border-radius: 5px;
+  padding: 10px;
+  width: 100%;
+  margin: 10px 0;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.create-room input:focus {
+  border-color: #FF4040; /* Resaltado en rojo */
+  background-color: #333; /* Fondo oscuro para el foco */
+  outline: none;
+}
+
+.create-room button {
+ background-color: #FF4040; /* Rojo conspirativo */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 15px;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.create-room button:hover {
+  background-color: #a50505;
+}
