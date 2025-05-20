@@ -1,0 +1,117 @@
+body {
+  background-color: #121212; /* Color oscuro */
+  font-family: 'Arial', sans-serif;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-image: url('https://cdn.agenciasinc.es/var/ezwebin_site/storage/images/_aliases/img_1col/opinion/teorias-de-la-conspiracion-la-pseudociencia-de-las-ciencias-sociales/6062465-5-esl-MX/Teorias-de-la-conspiracion-la-pseudociencia-de-las-ciencias-sociales.jpg'); /* Imagen de fondo tenebrosa */
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+}
+
+/* Contenedor del formulario de login */
+.loginview {
+  background-color: rgba(0, 0, 0, 0.678); /* Fondo translúcido para el formulario */
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); /* Sombra roja misteriosa */
+  width: 350px;
+  text-align: center;
+  position: relative;
+}
+
+/* Título del login */
+.loginview h2 {
+  color: #FF4040; /* Rojo conspirativo */
+  font-size: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 8px rgba(255, 0, 0, 0.7); /* Sombra de texto misteriosa */
+}
+
+/* Estilo de los campos de entrada (inputs) */
+.loginview input[type="email"],
+.loginview input[type="password"] {
+  background-color: #222; /* Fondo oscuro para los campos */
+  color: #fff;
+  border: 2px solid #555;
+  border-radius: 5px;
+  padding: 10px;
+  width: 100%;
+  margin: 10px 0;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.loginview input[type="email"]:focus,
+.loginview input[type="password"]:focus {
+  border-color: #FF4040; /* Resaltado en rojo */
+  background-color: #333; /* Fondo oscuro para el foco */
+  outline: none;
+}
+
+/* Estilo del botón de login */
+.loginview button {
+  background-color: #FF4040; /* Rojo conspirativo */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 15px;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.loginview button:hover {
+  background-color: #D83232; /* Rojo más oscuro al pasar el ratón */
+  transform: scale(1.05); /* Aumenta ligeramente el tamaño al pasar el ratón */
+}
+
+.loginview button:active {
+  transform: scale(1); /* Vuelve al tamaño original */
+}
+
+/* Estilo de los mensajes de error */
+.error-message {
+  color: #FF4040;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  text-shadow: 1px 1px 5px rgba(255, 0, 0, 0.7);
+}
+
+/* Efectos de animación misteriosa en el contenedor */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.loginview {
+  animation: fadeIn 1s ease-out; /* Efecto de desvanecimiento */
+}
+
+/* Efecto de parpadeo en el título */
+@keyframes blink {
+  0%, 50% {
+    color: #FF4040;
+  }
+  25%, 75% {
+    color: rgba(194, 62, 62, 0.733);
+  }
+}
+
+.loginview h2 {
+  animation: blink 1.9s infinite;
+}

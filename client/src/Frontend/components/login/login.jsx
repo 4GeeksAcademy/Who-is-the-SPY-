@@ -2,6 +2,7 @@ import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 import { useNavigate } from "react-router-dom";
+import './login.css';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -34,7 +35,7 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="loginview container">
       <h2>Iniciar sesión</h2>
       <form onSubmit={handleLogin}>
         <input

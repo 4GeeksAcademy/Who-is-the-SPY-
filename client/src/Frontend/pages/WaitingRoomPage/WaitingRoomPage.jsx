@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
+import { auth } from "../../firebase";
 import { getDatabase, ref, onValue } from "firebase/database";
+import './WaitingRoomPage.css';
 
 const WaitingRoomPage = () => {
   const [players, setPlayers] = useState([]);

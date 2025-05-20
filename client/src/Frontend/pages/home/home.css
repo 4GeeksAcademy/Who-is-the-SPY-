@@ -1,0 +1,75 @@
+/* Estilos generales para el contenedor y fondo */
+.home-container {
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;  /* Color del texto */
+  font-family: 'Courier New', Courier, monospace; /* Para un estilo "conspiranoico" */
+}
+
+/* Estilos para los botones misteriosos */
+.mystery-button {
+  background-color: transparent;
+  border: 2px solid #fff;
+  padding: 20px 40px;
+  font-size: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+  border-radius: 8px;
+  transition: all 0.4s ease;
+}
+
+/* Efecto de borde iluminado cuando el botón está en hover */
+.mystery-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  transition: all 0.4s ease;
+  border-radius: 50%;
+  z-index: -1;
+  transform: translate(-50%, -50%);
+}
+
+/* Cambios en hover */
+.mystery-button:hover::before {
+  width: 0;
+  height: 0;
+}
+
+.mystery-button:hover {
+  color: #000;
+  box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.8);
+  transform: scale(1.1);
+}
+
+/* Animación para el texto */
+.mystery-button span {
+  position: relative;
+  display: inline-block;
+  animation: mysteryAnim 2s infinite alternate;
+}
+
+@keyframes mysteryAnim {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(10px);
+    opacity: 1;
+  }
+}
+.inicio button{
+  color: #fff;
+}

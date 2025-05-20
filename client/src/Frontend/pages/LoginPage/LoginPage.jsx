@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase"; // Asegúrate de importar tu configuración de Firebase
+import { auth } from "../../firebase"; // Asegúrate de importar tu configuración de Firebase
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
