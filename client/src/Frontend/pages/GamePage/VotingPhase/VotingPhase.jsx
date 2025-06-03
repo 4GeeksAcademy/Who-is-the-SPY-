@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const VotingPhase = ({ missionTeam, players, onVote, votes, currentUserId }) => {
-  const [hasVoted, setHasVoted] = useState(!!votes[currentUserId]);
+  // Derivar si el jugador ya votó a partir de los votos actuales
+  const hasVoted = votes[currentUserId] !== undefined;
 
   const handleVote = (decision) => {
     if (!hasVoted) {
       onVote(currentUserId, decision);
-      setHasVoted(true);
     }
   };
 
@@ -18,7 +18,18 @@ const VotingPhase = ({ missionTeam, players, onVote, votes, currentUserId }) => 
       <ul className="team-list">
         {missionTeam.map((id) => {
           const player = players.find(p => p.id === id);
-          return <li key={id}>{player?.name || 'Jugador desconocido'}</li>;
+          return (
+            <li key={id}>
+              {player?.avatar && (
+                <img
+                  src={player.avatar}
+                  alt={player?.name}
+                  style={{ width: '24px', height: '24px', borderRadius: '50%', marginRight: '8px', verticalAlign: 'middle' }}
+                />
+              )}
+              {player?.name || 'Jugador desconocido'}
+            </li>
+          );
         })}
       </ul>
 
@@ -36,7 +47,7 @@ const VotingPhase = ({ missionTeam, players, onVote, votes, currentUserId }) => 
         <ul>
           {players.map(player => (
             <li key={player.id}>
-              {player.name}: {votes[player.id] === undefined ? '⏳' : votes[player.id] ? '✅' : '❌'}
+              {player.name}: {votes[player.id] === undefined ? '⏳ Pendiente' : votes[player.id] ? '✅ Aprobó' : '❌ Rechazó'}
             </li>
           ))}
         </ul>

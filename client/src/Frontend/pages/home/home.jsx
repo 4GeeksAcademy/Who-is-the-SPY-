@@ -14,30 +14,25 @@ const Home = () => {
     navigate("/login");
   };
 
-  const extractRoomId = (url) => {
+  const extractRoomId = (input) => {
     try {
-      const parts = url.trim().split("/");
-      return parts[parts.length - 1]; // Ej: https://tuweb.com/invite/abc123 → abc123
+      const url = new URL(input);
+      const paths = url.pathname.split("/");
+      return paths[paths.length - 1]; // Extrae el último segmento del path
     } catch {
-      return null;
+      return input.trim(); // Si no es una URL, asumimos que es solo el ID
     }
   };
 
   const handleJoinLink = () => {
     const roomId = extractRoomId(inviteLink);
+
     if (!roomId) {
-      alert("Link de invitación no válido");
+      alert("Link o código de invitación no válido");
       return;
     }
 
-    if (user) {
-      // Usuario logueado → va directo a join-room
-      navigate(`/join-room/${roomId}`);
-    } else {
-      // Usuario no logueado → guarda link y redirige al login
-      localStorage.setItem("pendingInviteLink", inviteLink);
-      navigate("/login");
-    }
+    navigate(`/room/${roomId}`);
   };
 
   return (
@@ -48,26 +43,13 @@ const Home = () => {
         <>
           <p>Agente {user.email}</p>
 
-          <button className="btn mystery-button" onClick={() => navigate("/create-room")}>
+          <button className="btn mystery-button" onClick={() => navigate("/create")}>
             Crear Sala
           </button>
 
           <button className="btn mystery-button" onClick={handleLogout}>
             Cerrar sesión
           </button>
-
-          <div className="join-room-section">
-            <h3>¿Tienes un link de invitación?</h3>
-            <input
-              type="text"
-              placeholder="Pega el link aquí"
-              value={inviteLink}
-              onChange={(e) => setInviteLink(e.target.value)}
-            />
-            <button className="btn mystery-button" onClick={handleJoinLink}>
-              Unirse a la sala
-            </button>
-          </div>
         </>
       ) : (
         <>
@@ -77,21 +59,21 @@ const Home = () => {
           <button className="btn mystery-button" onClick={() => navigate("/register")}>
             Regístrate
           </button>
-
-          <div className="join-room-section">
-            <h3>¿Tienes un link de invitación?</h3>
-            <input
-              type="text"
-              placeholder="Pega el link aquí"
-              value={inviteLink}
-              onChange={(e) => setInviteLink(e.target.value)}
-            />
-            <button className="btn mystery-button" onClick={handleJoinLink}>
-              Unirse a la sala
-            </button>
-          </div>
         </>
       )}
+
+      <div className="join-room-section">
+        <h3>¿Tienes un link o código de invitación?</h3>
+        <input
+          type="text"
+          placeholder="Pega el link o código aquí"
+          value={inviteLink}
+          onChange={(e) => setInviteLink(e.target.value)}
+        />
+        <button className="btn mystery-button" onClick={handleJoinLink}>
+          Unirse a la sala
+        </button>
+      </div>
     </div>
   );
 };

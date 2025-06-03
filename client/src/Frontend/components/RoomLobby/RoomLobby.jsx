@@ -1,26 +1,47 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ref, onValue, update } from 'firebase/database';
-import { auth, rtdb } from '../../firebase'; // ✅ Usamos la base de datos correcta
+import { ref, onValue, update, get, child } from 'firebase/database';
+import { auth, rtdb } from '../../firebase';
 import './RoomLobby.css';
 
 const RoomLobby = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
   const [roomData, setRoomData] = useState(null);
-  const [userStatus, setUserStatus] = useState('waiting');
   const [userId, setUserId] = useState('');
-  const [voteTime, setVoteTime] = useState(12);
-  const [spyCount, setSpyCount] = useState(1);
-  const [missionPrepTime, setMissionPrepTime] = useState(20);
+  const [userName, setUserName] = useState(''); // Para guardar nombre del usuario actual
   const [allPlayersReady, setAllPlayersReady] = useState(false);
   const [inviteLink, setInviteLink] = useState('');
   const [copied, setCopied] = useState(false);
+  const [voteTime, setVoteTime] = useState(12);
+  const [spyCount, setSpyCount] = useState(1);
+  const [missionPrepTime, setMissionPrepTime] = useState(20);
 
   useEffect(() => {
+    const user = auth.currentUser;
+    if (!user) {
+      alert('Debes estar logueado para entrar a una sala');
+      navigate('/login');
+      return;
+    }
+    setUserId(user.uid);
+    setUserName(user.displayName || 'Jugador');
+
     const roomRef = ref(rtdb, 'rooms/' + roomId);
 
-    onValue(roomRef, (snapshot) => {
+    // Añadir jugador a la sala si no está ya
+    get(child(roomRef, 'players/' + user.uid)).then((snapshot) => {
+      if (!snapshot.exists()) {
+        update(ref(rtdb, `rooms/${roomId}/players/${user.uid}`), {
+          name: user.displayName || 'Jugador',
+          status: 'waiting',
+          avatar: null,
+        });
+      }
+    });
+
+    // Escuchar cambios en la sala y jugadores
+    const unsubscribe = onValue(roomRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         setRoomData(data);
@@ -38,26 +59,21 @@ const RoomLobby = () => {
         }
       } else {
         alert('Sala no encontrada.');
+        navigate('/home');
       }
     });
 
-    const user = auth.currentUser;
-    if (user) {
-      setUserId(user.uid);
-    }
+    return () => unsubscribe();
   }, [roomId, navigate]);
 
   const handleReady = () => {
     if (!userId || !roomData) return;
-    const playerRef = ref(rtdb, `rooms/${roomId}/players/${userId}`);
-    update(playerRef, { status: 'ready' });
-    setUserStatus('ready');
+    update(ref(rtdb, `rooms/${roomId}/players/${userId}`), { status: 'ready' });
   };
 
   const handleStartGame = () => {
     if (userId !== roomData.host) return;
-    const roomRef = ref(rtdb, `rooms/${roomId}`);
-    update(roomRef, {
+    update(ref(rtdb, `rooms/${roomId}`), {
       gameStarted: true,
       settings: {
         voteTime,
@@ -74,13 +90,21 @@ const RoomLobby = () => {
     });
   };
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   const isHost = roomData && roomData.host === userId;
 
   return (
     <div className="room-lobby">
+      <button className="back-button" onClick={handleGoBack}>
+        ← Volver atrás
+      </button>
+
       {roomData ? (
         <>
-          <h2>Sala: {roomId}</h2>
+          <h2>Sala: {roomData.roomName || roomId}</h2>
           <div className="invite-link-group">
             <input
               type="text"
@@ -94,25 +118,29 @@ const RoomLobby = () => {
           </div>
 
           <div className="player-row">
-            {Object.entries(roomData.players).map(([key, player]) => {
-              const avatarUrl =
-                player.avatar || `https://api.dicebear.com/7.x/thumbs/svg?seed=${player.name}`;
-              return (
-                <div
-                  key={key}
-                  className={`player-card ${player.status === 'ready' ? 'ready' : ''}`}
-                >
-                  <img className="avatar" src={avatarUrl} alt={`Avatar de ${player.name}`} />
-                  <div className="player-name">
-                    {player.name}
-                    {player.status === 'ready' && <span className="check"> ✅</span>}
+            {roomData.players &&
+              Object.entries(roomData.players).map(([key, player]) => {
+                const avatarUrl =
+                  player.avatar || `https://api.dicebear.com/7.x/thumbs/svg?seed=${player.name}`;
+                return (
+                  <div
+                    key={key}
+                    className={`player-card ${player.status === 'ready' ? 'ready' : ''}`}
+                  >
+                    <img className="avatar" src={avatarUrl} alt={`Avatar de ${player.name}`} />
+                    <div className="player-name">
+                      {player.name}
+                      {key === roomData.host && <span className="host-tag"> (Anfitrión)</span>}
+                    </div>
+                    {player.status === 'ready' && <div className="ready-label">Ready ✅</div>}
+                    {key === userId && player.status !== 'ready' && (
+                      <button className="ready-button" onClick={handleReady}>
+                        Estoy listo
+                      </button>
+                    )}
                   </div>
-                  {key === userId && player.status !== 'ready' && (
-                    <button onClick={handleReady}>Estoy listo</button>
-                  )}
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
 
           {isHost && (
@@ -137,32 +165,30 @@ const RoomLobby = () => {
               <label>Tiempo para Preparar Misión:</label>
               <div className="control-group">
                 <button
-                  onClick={() =>
-                    setMissionPrepTime((prev) => {
-                      const options = [20, 40, 60];
-                      const i = options.indexOf(prev);
-                      return options[(i + options.length - 1) % options.length];
-                    })
-                  }
+                  onClick={() => {
+                    const options = [20, 40, 60];
+                    const i = options.indexOf(missionPrepTime);
+                    setMissionPrepTime(options[(i + options.length - 1) % options.length]);
+                  }}
                 >
                   ◀
                 </button>
                 <span>{missionPrepTime} s</span>
                 <button
-                  onClick={() =>
-                    setMissionPrepTime((prev) => {
-                      const options = [20, 40, 60];
-                      const i = options.indexOf(prev);
-                      return options[(i + 1) % options.length];
-                    })
-                  }
+                  onClick={() => {
+                    const options = [20, 40, 60];
+                    const i = options.indexOf(missionPrepTime);
+                    setMissionPrepTime(options[(i + 1) % options.length]);
+                  }}
                 >
                   ▶
                 </button>
               </div>
 
               {allPlayersReady ? (
-                <button onClick={handleStartGame}>Iniciar Juego</button>
+                <button className="start-button" onClick={handleStartGame}>
+                  Iniciar Juego
+                </button>
               ) : (
                 <p>Esperando a que todos los jugadores estén listos...</p>
               )}

@@ -1,15 +1,17 @@
 .create-room {
- background-color: rgba(0, 0, 0, 0.678); /* Fondo translúcido para el formulario */
-  padding: 30px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40px;
   border-radius: 15px;
-  box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); /* Sombra roja misteriosa */
-  width: 350px;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+  width: 400px;
+  margin: 100px auto;
   text-align: center;
-  position: relative;
+  color: white;
+ 
 }
 
 .create-room h2 {
- color: #FF4040; /* Rojo conspirativo */
+  color: #FF4040;
   font-size: 2rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -18,7 +20,7 @@
 }
 
 .create-room input {
-ackground-color: #222; /* Fondo oscuro para los campos */
+  background-color: #222; /* ← corregido: "ackground-color" → "background-color" */
   color: #fff;
   border: 2px solid #555;
   border-radius: 5px;
@@ -31,13 +33,13 @@ ackground-color: #222; /* Fondo oscuro para los campos */
 }
 
 .create-room input:focus {
-  border-color: #FF4040; /* Resaltado en rojo */
-  background-color: #333; /* Fondo oscuro para el foco */
+  border-color: #FF4040;
+  background-color: #333;
   outline: none;
 }
 
 .create-room button {
- background-color: #FF4040; /* Rojo conspirativo */
+  background-color: #FF4040;
   color: white;
   border: none;
   border-radius: 5px;
@@ -50,4 +52,48 @@ ackground-color: #222; /* Fondo oscuro para los campos */
 
 .create-room button:hover {
   background-color: #a50505;
+}
+
+/* Estilo para la sección del botón "Join Room" */
+.join-room-section {
+  margin-top: 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+.join-room-button {
+background-color: #FF4040;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 15px;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.join-room-button:hover {
+  background-color: #a50505;
+}
+
+.join-room-button,
+.go-back-button {
+  background-color: #FF4040;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.join-room-button:hover,
+.go-back-button:hover {
+  background-color: #a50505;
+  transform: scale(1.05);
 }

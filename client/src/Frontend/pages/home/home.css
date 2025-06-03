@@ -74,14 +74,14 @@
   color: #fff;
 }
 
-.join-room-section {
-  margin-top: 30px;
-  text-align: center;
-}
-
 .join-room-section input {
   padding: 10px;
   width: 80%;
   max-width: 400px;
   margin-bottom: 10px;
+}
+.join-room-section button {
+  margin-top: 15px;
+  width: 39%;
+  max-width: 400px;
 }

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { ref, onValue } from 'firebase/database';
-import { auth, rtdb } from '../../firebase'; // Usa rtdb (Realtime Database)
-import { initializeGame, proposeMissionTeam, castVote, resolveMission} from './GameLogic';
+import { ref, onValue, set } from 'firebase/database';
+import { auth, rtdb } from '../../firebase';
+import { initializeGame, proposeMissionTeam, castVote, resolveMission } from './GameLogic';
 import TeamProposal from './TeamProposal/TeamProposal';
 import MissionPhase from './MissionPhase/MissionPhase';
 import VotingPhase from './VotingPhase/VotingPhase';
@@ -16,52 +16,79 @@ const GamePage = () => {
   const [roomData, setRoomData] = useState(null);
 
   useEffect(() => {
-    const roomRef = ref(rtdb, 'rooms/' + roomId); // Usar rtdb
+    const unsubscribeAuth = auth.onAuthStateChanged((user) => {
+      if (user) setUserId(user.uid);
+    });
 
-    const unsubscribe = onValue(roomRef, (snapshot) => {
+    const roomRef = ref(rtdb, `rooms/${roomId}`);
+    const unsubscribeRoom = onValue(roomRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         setRoomData(data);
 
         const user = auth.currentUser;
-        if (user) {
-          setUserId(user.uid);
-        }
-
-        if (!gameState) {
+        if (user && !data.gameState && data.host === user.uid) {
           const initialGameState = initializeGame(data.settings, data.players);
-          setGameState(initialGameState);
+          const gameRef = ref(rtdb, `rooms/${roomId}/gameState`);
+          set(gameRef, initialGameState);
         }
       } else {
         alert('Sala no encontrada.');
       }
     });
 
-    return () => unsubscribe(); // Limpieza
-  }, [roomId, gameState]);
+    const gameRef = ref(rtdb, `rooms/${roomId}/gameState`);
+    const unsubscribeGame = onValue(gameRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setGameState(snapshot.val());
+      }
+    });
+
+    return () => {
+      unsubscribeAuth();
+      unsubscribeRoom();
+      unsubscribeGame();
+    };
+  }, [roomId]);
+
+  const updateGameStateInDB = (newState) => {
+    const gameRef = ref(rtdb, `rooms/${roomId}/gameState`);
+    set(gameRef, newState);
+  };
 
   const handleNextPhase = () => {
-    setGameState((prevState) => ({
-      ...prevState,
-      round: prevState.round + 1,
+    if (!gameState) return;
+    const newState = {
+      ...gameState,
+      round: gameState.round + 1,
       missionInProgress: false,
       currentMission: null,
-    }));
+      voteInProgress: false,
+    };
+    updateGameStateInDB(newState);
   };
 
   const handleTeamProposal = (selectedIds) => {
     const newState = proposeMissionTeam(gameState, selectedIds);
-    setGameState(newState);
+    if (newState) updateGameStateInDB(newState);
   };
 
   const handleVoteOutcome = (vote) => {
     const newState = castVote(gameState, userId, vote);
-    setGameState(newState);
+    updateGameStateInDB(newState);
   };
 
+  // Aquí recibimos el objeto votes de MissionPhase: { playerId: 'success' | 'fail' }
+  // Convertimos esos votos a 'fail' para sabotaje y 'success' para éxito,
+  // y dejamos fuera jugadores que no votaron para manejar misión corrupta
   const handleMissionOutcome = (missionVotes) => {
-    const newState = resolveMission(gameState, missionVotes);
-    setGameState(newState);
+    const votesArray = gameState.currentMission.team.map(pid => {
+      // Si el jugador votó, usamos su voto, sino no contamos voto (para corrupción)
+      return missionVotes[pid] || null;
+    }).filter(v => v !== null); // Excluir votos faltantes
+
+    const newState = resolveMission(gameState, votesArray);
+    updateGameStateInDB(newState);
   };
 
   return (

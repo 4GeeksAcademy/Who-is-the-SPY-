@@ -1,12 +1,16 @@
 .room-lobby {
   background-color: #121212;
   color: #ffffff;
-  min-height: 100vh;
-  padding: 40px 20px;
+  min-height: 50vh;
+  padding: 20px 20px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
+  min-width: 70vw;
+  aspect-ratio: 2/ 1;
+  
+
 }
 
 .room-lobby h2 {
@@ -42,6 +46,7 @@
   padding: 10px;
   transition: all 0.3s ease;
   animation: fadeIn 0.5s ease-in;
+  position: relative;
 }
 
 .player-card.ready {
@@ -72,17 +77,48 @@
   border-radius: 5px;
   font-size: 0.8rem;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.host-dashboard {
-  background-color: #1c1c1c;
-  padding: 25px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  text-align: left;
+.player-card button:hover {
+  background-color: #2e7d32;
 }
+
+/* Nueva clase para la etiqueta "Ready" */
+.ready-label {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #c8e6c9;
+  text-shadow: 0 0 5px #2e7d32;
+}
+
+
+/* Etiqueta "Anfitrión" */
+.host-tag {
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: #ffea28;
+  margin-left: 4px;
+}
+
+
+
+/* Botón para copiar el enlace */
+.invite-link-group button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.invite-link-group button:hover {
+  background-color: #6a806b5d;
+}
+
 
 .host-dashboard h3 {
   font-size: 1.4rem;
@@ -93,6 +129,21 @@
   font-size: 1rem;
   color: #aaa;
   margin-bottom: 20px;
+}
+
+
+
+.host-dashboard {
+  background-color: #1c1c1c;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  text-align: left;
+}
+.host-dashboard h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
 }
 
 .host-dashboard label {
@@ -126,6 +177,7 @@
   font-size: 1rem;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .control-group button:hover {
@@ -141,4 +193,19 @@
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* Botón volver atrás */
+.back-button {
+  align-self: flex-start;
+  margin-bottom: 20px;
+  background: none;
+  border: none;
+  color: #bbb;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.back-button:hover {
+  color: #fff;
 }

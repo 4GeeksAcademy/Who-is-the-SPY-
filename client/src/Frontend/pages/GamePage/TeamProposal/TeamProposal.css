@@ -2,34 +2,134 @@
   color: white;
   text-align: center;
   margin-top: 30px;
+  padding: 0 15px;
+}
+
+.team-proposal h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
 }
 
 .player-list {
   list-style: none;
   padding: 0;
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
-  gap: 20px;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .player-list li {
+  background-color: #222;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 10px 15px;
   cursor: pointer;
-  background: #222;
-  padding: 10px;
-  border-radius: 10px;
-  width: 100px;
-  text-align: center;
-  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  user-select: none;
+  min-width: 180px;
+}
+
+.player-list li:hover {
+  border-color: #4caf50;
+  background-color: #333;
 }
 
 .player-list li.selected {
-  border: 2px solid limegreen;
-  background-color: #2a2;
+  border-color: #4caf50;
+  background-color: #2e7d32;
 }
 
 .player-list img {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
+  object-fit: cover;
+}
+
+.player-list span {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Botón */
+.team-proposal button {
+  padding: 12px 25px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  min-width: 200px;
+}
+
+.team-proposal button:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+.team-proposal button:not(:disabled):hover {
+  background-color: #388e3c;
+}
+
+/* Responsive */
+
+/* Tablets (768px - 1024px) */
+@media (max-width: 1024px) {
+  .player-list li {
+    min-width: 140px;
+    padding: 8px 12px;
+  }
+
+  .player-list img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .player-list span {
+    font-size: 14px;
+  }
+
+  .team-proposal button {
+    min-width: 180px;
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+}
+
+/* Móviles (menos de 768px) */
+@media (max-width: 767px) {
+  .player-list {
+    gap: 10px;
+  }
+
+  .player-list li {
+    flex: 1 1 100%;
+    max-width: 300px;
+    min-width: unset;
+    padding: 10px;
+    justify-content: flex-start;
+  }
+
+  .player-list img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .player-list span {
+    font-size: 15px;
+  }
+
+  .team-proposal button {
+    width: 100%;
+    min-width: unset;
+    font-size: 16px;
+    padding: 12px 0;
+  }
 }

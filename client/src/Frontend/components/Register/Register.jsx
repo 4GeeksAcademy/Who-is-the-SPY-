@@ -18,7 +18,7 @@ const Register = () => {
       // Obtener el ID Token (JWT) de Firebase
       const user = auth.currentUser;
       const idToken = await user.getIdToken();
-      console.log("ID Token:", idToken); // Guardarlo en localStorage o sesión si lo necesitas
+      console.log("ID Token:", idToken); // Guardarlo en localStorage 
 
       // Redirigir al home
       navigate("/");

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 
-const TeamProposal = ({ players, missionSize, onSubmit, currentUserId, leaderId }) => {
+const TeamProposal = ({ players, missionSize, onSubmit, userId, leaderId }) => {
   const [selectedIds, setSelectedIds] = useState([]);
 
   const toggleSelect = (id) => {
+    if (userId !== leaderId) return; // solo líder puede seleccionar
+
     if (selectedIds.includes(id)) {
       setSelectedIds(selectedIds.filter((pid) => pid !== id));
     } else if (selectedIds.length < missionSize) {
@@ -19,7 +21,7 @@ const TeamProposal = ({ players, missionSize, onSubmit, currentUserId, leaderId 
     }
   };
 
-  if (currentUserId !== leaderId) {
+  if (userId !== leaderId) {
     const leaderName = players.find(p => p.id === leaderId)?.name || 'Líder';
     return <p>Esperando que <strong>{leaderName}</strong> elija al equipo...</p>;
   }
@@ -33,13 +35,16 @@ const TeamProposal = ({ players, missionSize, onSubmit, currentUserId, leaderId 
             key={player.id}
             className={selectedIds.includes(player.id) ? 'selected' : ''}
             onClick={() => toggleSelect(player.id)}
+            style={{ cursor: 'pointer' }}
           >
             <img src={player.avatar} alt={player.name} />
             <span>{player.name}</span>
           </li>
         ))}
       </ul>
-      <button onClick={handleSubmit}>Proponer equipo</button>
+      <button onClick={handleSubmit} disabled={selectedIds.length !== missionSize}>
+        Proponer equipo
+      </button>
     </div>
   );
 };
