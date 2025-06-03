@@ -1,0 +1,116 @@
+.voting-phase {
+  color: white;
+  text-align: center;
+  margin-top: 30px;
+  padding: 0 15px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.voting-phase h2 {
+  margin-bottom: 15px;
+}
+
+.voting-phase p {
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+.team-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.team-list li {
+  background: #333;
+  padding: 8px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-width: 100px;
+  justify-content: center;
+}
+
+.team-list img {
+  margin-right: 8px;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+}
+
+.vote-buttons {
+  margin-bottom: 20px;
+}
+
+.vote-buttons button {
+  background-color: #444;
+  border: none;
+  color: white;
+  padding: 12px 25px;
+  margin: 0 10px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.vote-buttons button:hover {
+  background-color: #666;
+}
+
+.vote-status {
+  text-align: left;
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+.vote-status h3 {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.vote-status ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.vote-status li {
+  padding: 6px 12px;
+  background-color: #222;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  color: #ddd;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 480px) {
+  .team-list {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .team-list li {
+    min-width: auto;
+  }
+  .vote-buttons button {
+    margin: 8px 0;
+    width: 100%;
+  }
+  .vote-status {
+    max-width: 100%;
+  }
+}

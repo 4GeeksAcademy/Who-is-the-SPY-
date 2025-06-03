@@ -1,0 +1,93 @@
+mission-phase, .voting-phase {
+  color: white;
+  text-align: center;
+  margin-top: 30px;
+  padding: 0 15px;
+}
+
+.outcome-buttons button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background-color: #4caf50;
+  color: white;
+}
+
+.outcome-buttons button:hover {
+  background-color: #388e3c;
+}
+
+.mission-status, .voting-status {
+  margin-top: 20px;
+  text-align: left;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mission-status ul, .voting-status ul {
+  list-style: none;
+  padding: 0;
+}
+
+.mission-status li, .voting-status li {
+  padding: 8px 12px;
+  border-bottom: 1px solid #444;
+  display: flex;
+  justify-content: space-between;
+}
+
+.vote-summary {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+/* Responsive */
+
+/* Tablets (768px - 1024px) */
+@media (max-width: 1024px) {
+  .outcome-buttons button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  .mission-status, .voting-status {
+    max-width: 90%;
+  }
+
+  .mission-status li, .voting-status li {
+    padding: 6px 10px;
+  }
+}
+
+/* Móviles (menos de 768px) */
+@media (max-width: 767px) {
+  .outcome-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .outcome-buttons button {
+    width: 100%;
+    max-width: 300px;
+    font-size: 16px;
+    padding: 12px 0;
+  }
+
+  .mission-status, .voting-status {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+
+  .mission-status li, .voting-status li {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 5px;
+  }
+}

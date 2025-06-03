@@ -1,0 +1,65 @@
+.join-room {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+  width: 400px;
+  margin: 100px auto;
+  text-align: center;
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+}
+.btnbackjoin{
+    background-color: #FF4040;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+.btnbackjoin:hover{
+      background-color: #a50505;
+  transform: scale(1.05);
+}
+
+.inputlink {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.join-room input {
+  background-color: #222;
+  color: #fff;
+  border: 2px solid #555;
+  border-radius: 5px;
+  padding: 12px;
+  width: 100%;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.join-room input:focus {
+  border-color: #FF4040;
+  background-color: #333;
+  outline: none;
+}
+
+.join-room button {
+  background-color: #FF4040;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.join-room button:hover {
+  background-color: #a50505;
+  transform: scale(1.05);
+}

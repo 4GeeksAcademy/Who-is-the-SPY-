@@ -1,0 +1,45 @@
+.game-page {
+  background-color: #111;
+  color: white;
+  min-height: 100vh;
+  padding: 40px;
+  text-align: center;
+}
+
+.players {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 30px 0;
+}
+
+.player {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  width: 120px;
+}
+
+.player img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+}
+
+/* Estados de misiones */
+.mission-success {
+  background-color: #1f883d; /* verde */
+}
+
+.mission-fail {
+  background-color: #b91c1c; /* rojo */
+}
+
+.mission-corrupt {
+  background-color: #eab308; /* amarillo claro */
+}
+
+.mission-denied {
+  background-color: #92400e; /* amarillo oscuro */
+}
