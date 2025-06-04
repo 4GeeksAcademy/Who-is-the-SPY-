@@ -85,3 +85,12 @@
   width: 39%;
   max-width: 400px;
 }
+
+.inicio span{
+  color: rgb(255, 255, 255);
+  size: 2rem;
+}
+.inicio h2{
+  background-color: #00000095;
+  padding: 2%;
+}

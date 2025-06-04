@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase"; // Asegúrate de exportar tu configuración de Firebase
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../../firebase"; 
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -15,10 +16,13 @@ const Register = () => {
       // Registro con Firebase
       await createUserWithEmailAndPassword(auth, email, password);
 
-      // Obtener el ID Token (JWT) de Firebase
+      // Actualizar perfil con el nombre elegido
       const user = auth.currentUser;
+      await updateProfile(user, { displayName });
+
+      // Obtener el ID Token (JWT) de Firebase
       const idToken = await user.getIdToken();
-      console.log("ID Token:", idToken); // Guardarlo en localStorage 
+      console.log("ID Token:", idToken); // Guardarlo en localStorage si quieres
 
       // Redirigir al home
       navigate("/");
@@ -31,6 +35,14 @@ const Register = () => {
     <div>
       <h2>Crear cuenta</h2>
       <form onSubmit={handleRegister}>
+        <input
+          type="text"
+          placeholder="Nombre de usuario"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+          required
+        />
+        <br />
         <input
           type="email"
           placeholder="Correo electrónico"

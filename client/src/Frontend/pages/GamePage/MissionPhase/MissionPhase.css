@@ -1,4 +1,4 @@
-mission-phase, .voting-phase {
+/*mission-phase, .voting-phase {
   color: white;
   text-align: center;
   margin-top: 30px;
@@ -48,7 +48,7 @@ mission-phase, .voting-phase {
 
 /* Responsive */
 
-/* Tablets (768px - 1024px) */
+/* Tablets (768px - 1024px) 
 @media (max-width: 1024px) {
   .outcome-buttons button {
     font-size: 14px;
@@ -64,7 +64,7 @@ mission-phase, .voting-phase {
   }
 }
 
-/* Móviles (menos de 768px) */
+/* Móviles (menos de 768px) 
 @media (max-width: 767px) {
   .outcome-buttons {
     display: flex;
@@ -90,4 +90,81 @@ mission-phase, .voting-phase {
     align-items: flex-start;
     padding: 8px 5px;
   }
+}*/
+
+
+/* Contenedor principal de la fase de misión */
+.mission-phase {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Botones de voto */
+.outcome-buttons button {
+  margin: 10px;
+  padding: 10px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.outcome-buttons button:first-child {
+  background-color: #4caf50;
+  color: white;
+}
+
+.outcome-buttons button:last-child {
+  background-color: #f44336;
+  color: white;
+}
+
+.outcome-buttons button:hover {
+  opacity: 0.9;
+}
+
+/* Vista para espectadores */
+.spectator-view {
+  padding: 10px;
+  background-color: #eef1f6;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+.spectator-view ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.spectator-view li {
+  padding: 5px 0;
+}
+
+/* Temporizador */
+.mission-timer {
+  font-size: 18px;
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+/* Resultado de la misión */
+.mission-result {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #e6f7e6;
+  border: 2px solid #a5d6a7;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.mission-result h3 {
+  margin: 0;
 }

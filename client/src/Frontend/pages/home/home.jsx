@@ -41,7 +41,7 @@ const Home = () => {
 
       {user ? (
         <>
-          <p>Agente {user.email}</p>
+          <h2>Agente <span>{user.displayName || user.email}</span></h2>
 
           <button className="btn mystery-button" onClick={() => navigate("/create")}>
             Crear Sala

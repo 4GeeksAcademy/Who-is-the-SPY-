@@ -76,18 +76,31 @@ const GamePage = () => {
   const handleVoteOutcome = (vote) => {
     const newState = castVote(gameState, userId, vote);
     updateGameStateInDB(newState);
+
+    // Verifica si todos votaron
+    const totalVotes = Object.keys(newState.currentMission.votes || {}).length;
+    const totalPlayers = newState.players.length;
+
+    if (totalVotes === totalPlayers && newState.voteInProgress === false && newState.missionInProgress === false) {
+      // Todos han votado, si el equipo fue aprobado, se inicia misión
+      if (newState.currentMission.approved) {
+        updateGameStateInDB({
+          ...newState,
+          missionInProgress: true,
+        });
+      } else {
+        // Misión denegada, ya fue manejado en castVote (avanza ronda)
+        updateGameStateInDB(newState);
+      }
+    }
   };
 
-  // Aquí recibimos el objeto votes de MissionPhase: { playerId: 'success' | 'fail' }
-  // Convertimos esos votos a 'fail' para sabotaje y 'success' para éxito,
-  // y dejamos fuera jugadores que no votaron para manejar misión corrupta
   const handleMissionOutcome = (missionVotes) => {
     const votesArray = gameState.currentMission.team.map(pid => {
-      // Si el jugador votó, usamos su voto, sino no contamos voto (para corrupción)
       return missionVotes[pid] || null;
-    }).filter(v => v !== null); // Excluir votos faltantes
+    }).filter(v => v !== null);
 
-    const newState = resolveMission(gameState, votesArray);
+    const newState = resolveMission(gameState, missionVotes);
     updateGameStateInDB(newState);
   };
 
@@ -107,10 +120,11 @@ const GamePage = () => {
             />
           ) : gameState.voteInProgress ? (
             <VotingPhase
+              missionTeam={gameState.currentMission?.team || []}
               players={gameState.players}
-              onVote={handleVoteOutcome}
+              currentUserId={userId}
               votes={gameState.currentMission?.votes || {}}
-              userId={userId}
+              onVote={handleVoteOutcome}
             />
           ) : (
             <TeamProposal

@@ -9,7 +9,7 @@ export const initializeGame = (settings, playersObj) => {
     id,
     name: player.name,
     avatar: player.avatar || `https://api.dicebear.com/7.x/thumbs/svg?seed=${player.name}`,
-    role: 'agent', // Inicialmente todos son agentes
+    role: 'agent',
     vote: null,
     isLeader: false,
   }));
@@ -33,18 +33,19 @@ export const initializeGame = (settings, playersObj) => {
     voteInProgress: false,
     missionInProgress: false,
     failedMissions: 0,
-    corruptedMissions: 0, // 🟡
-    deniedMissions: 0,    // 🟠
+    corruptedMissions: 0,
+    deniedMissions: 0,
     spiesScore: 0,
     agentsScore: 0,
   };
 };
 
 function generateMissionSizes(playerCount) {
-  let base = [2, 2, 2, 3, 3];
+  let base = [2, 2, 2, 3, 3]; // Puedes ajustar esta lógica según cantidad real
   return shuffleArray(base);
 }
 
+// Lógica para proponer un equipo de misión
 export const proposeMissionTeam = (gameState, selectedPlayerIds) => {
   const missionSize = gameState.missionSizes[gameState.round - 1];
 
@@ -57,12 +58,12 @@ export const proposeMissionTeam = (gameState, selectedPlayerIds) => {
       approved: null,
       result: null,
       votes: {},
-      sabotageVotes: [],
     },
     voteInProgress: true,
   };
 };
 
+// Votos de aprobación o rechazo del equipo (previo a misión)
 export const castVote = (gameState, playerId, vote) => {
   if (!gameState.voteInProgress) return gameState;
 
@@ -92,12 +93,10 @@ export const castVote = (gameState, playerId, vote) => {
     if (!approved) {
       newState.deniedMissions += 1;
 
-      // Dos misiones denegadas = 1 punto para espías
       if (newState.deniedMissions % 2 === 0) {
         newState.spiesScore += 1;
       }
 
-      // Registrar como misión corrupta (amarillo oscuro)
       newState.missionHistory.push({
         result: 'denied',
         color: 'dark-yellow',
@@ -119,12 +118,33 @@ export const castVote = (gameState, playerId, vote) => {
   };
 };
 
+// 🔥 NUEVO: Votos de misión (éxito o sabotaje)
+export const castMissionVote = (gameState, playerId, vote) => {
+  if (!gameState.missionInProgress) return gameState;
+
+  // Solo jugadores en la misión pueden votar
+  if (!gameState.currentMission.team.includes(playerId)) return gameState;
+
+  const updatedVotes = {
+    ...gameState.currentMission.votes,
+    [playerId]: vote,
+  };
+
+  return {
+    ...gameState,
+    currentMission: {
+      ...gameState.currentMission,
+      votes: updatedVotes,
+    },
+  };
+};
+
+// Resolver el resultado de la misión
 export const resolveMission = (gameState, missionVotesObj) => {
   if (!gameState.missionInProgress) return gameState;
 
   const team = gameState.currentMission.team;
-  // Extraer votos en orden del equipo
-  const missionVotes = team.map(playerId => missionVotesObj[playerId]).filter(v => v !== undefined);
+  const missionVotes = team.map(playerId => missionVotesObj[playerId]).filter(Boolean);
 
   const fails = missionVotes.filter(v => v === 'fail').length;
   const missingVotes = missionVotes.length < team.length;
@@ -134,19 +154,15 @@ export const resolveMission = (gameState, missionVotesObj) => {
   let newGameState = { ...gameState };
 
   if (missingVotes) {
-    // Misión corrupta (alguien no votó a tiempo)
     newGameState.corruptedMissions += 1;
-
     if (newGameState.corruptedMissions % 2 === 0) {
       newGameState.spiesScore += 1;
     }
-
     result = 'corrupted';
     color = 'yellow';
   } else if (fails > 0) {
     newGameState.failedMissions += 1;
     newGameState.spiesScore += 1;
-
     result = 'fail';
     color = 'red';
   } else {
